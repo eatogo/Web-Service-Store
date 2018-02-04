@@ -15,14 +15,14 @@
 	<fieldset>
 		<legend>搜尋各菜式餐點</legend>
 		<ul>
-		<li><a href="RequestFoodByType.do?food_type=chinese">中式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=japanese">日式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=american">美式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=thailand">泰式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=korean">韓式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=italian">義式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=hongkong">港式</a></li>
-		<li><a href="RequestFoodByType.do?food_type=beverage">茶飲類</a></li>
+			<li><a href="RequestFoodByType.do?food_type=chinese">中式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=japanese">日式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=american">美式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=thailand">泰式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=korean">韓式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=italian">義式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=hongkong">港式</a></li>
+			<li><a href="RequestFoodByType.do?food_type=beverage">茶飲類</a></li>
 		</ul>
 	</fieldset>
 </body>
