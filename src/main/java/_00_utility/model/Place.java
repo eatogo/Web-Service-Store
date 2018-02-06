@@ -4,9 +4,13 @@ public class Place {
 	private String requestIdentity = null;
 	private Double latitude = null;
 	private Double longitude = null;
+	
+	public Place(Double latitude, Double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 
 	public Place(String requestIdentity, Double latitude, Double longitude) {
-		super();
 		this.requestIdentity = requestIdentity;
 		this.latitude = latitude;
 		this.longitude = longitude;

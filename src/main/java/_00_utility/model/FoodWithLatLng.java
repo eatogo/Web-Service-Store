@@ -1,41 +1,37 @@
-package _02_recommendation.model;
+package _00_utility.model;
 
-public class Food {
+public class FoodWithLatLng {
 	private Integer food_id;
 	private String food_name;
 	private Integer food_price;
 	private String food_intro;
-	private String food_pic_hdpi;
-	private String food_pic_ldpi;
-	private String food_pic_mdpi;
-	private String food_pic;
 	private Integer food_limit;
 	private String food_type;
 	private Integer food_store;
 	private String food_status;
 	private Long food_review_count;
-	
-	public Food() {
+	private Double store_latitude;
+	private Double store_longitude;
+
+	public FoodWithLatLng() {
 		super();
 	}
 
-	public Food(Integer food_id, String food_name, Integer food_price, String food_intro, String food_pic_hdpi,
-			String food_pic_ldpi, String food_pic_mdpi, String food_pic, Integer food_limit, String food_type,
-			Integer food_store, String food_status, Long food_review_count) {
+	public FoodWithLatLng(Integer food_id, String food_name, Integer food_price, String food_intro, Integer food_limit,
+			String food_type, Integer food_store, String food_status, Long food_review_count, Double store_latitude,
+			Double store_longitude) {
 		super();
 		this.food_id = food_id;
 		this.food_name = food_name;
 		this.food_price = food_price;
 		this.food_intro = food_intro;
-		this.food_pic_hdpi = food_pic_hdpi;
-		this.food_pic_ldpi = food_pic_ldpi;
-		this.food_pic_mdpi = food_pic_mdpi;
-		this.food_pic = food_pic;
 		this.food_limit = food_limit;
 		this.food_type = food_type;
 		this.food_store = food_store;
 		this.food_status = food_status;
 		this.food_review_count = food_review_count;
+		this.store_latitude = store_latitude;
+		this.store_longitude = store_longitude;
 	}
 
 	public Integer getFood_id() {
@@ -68,38 +64,6 @@ public class Food {
 
 	public void setFood_intro(String food_intro) {
 		this.food_intro = food_intro;
-	}
-
-	public String getFood_pic_hdpi() {
-		return food_pic_hdpi;
-	}
-
-	public void setFood_pic_hdpi(String food_pic_hdpi) {
-		this.food_pic_hdpi = food_pic_hdpi;
-	}
-
-	public String getFood_pic_ldpi() {
-		return food_pic_ldpi;
-	}
-
-	public void setFood_pic_ldpi(String food_pic_ldpi) {
-		this.food_pic_ldpi = food_pic_ldpi;
-	}
-
-	public String getFood_pic_mdpi() {
-		return food_pic_mdpi;
-	}
-
-	public void setFood_pic_mdpi(String food_pic_mdpi) {
-		this.food_pic_mdpi = food_pic_mdpi;
-	}
-
-	public String getFood_pic() {
-		return food_pic;
-	}
-
-	public void setFood_pic(String food_pic) {
-		this.food_pic = food_pic;
 	}
 
 	public Integer getFood_limit() {
@@ -142,13 +106,20 @@ public class Food {
 		this.food_review_count = food_review_count;
 	}
 
-	@Override
-	public String toString() {
-		return "Food [food_id=" + food_id + ", food_name=" + food_name + ", food_price=" + food_price + ", food_intro="
-				+ food_intro + ", food_pic_hdpi=" + food_pic_hdpi + ", food_pic_ldpi=" + food_pic_ldpi
-				+ ", food_pic_mdpi=" + food_pic_mdpi + ", food_pic=" + food_pic + ", food_limit=" + food_limit
-				+ ", food_type=" + food_type + ", food_store=" + food_store + ", food_status=" + food_status
-				+ ", food_review_count=" + food_review_count + "]";
+	public Double getStore_latitude() {
+		return store_latitude;
 	}
-	
+
+	public void setStore_latitude(Double store_latitude) {
+		this.store_latitude = store_latitude;
+	}
+
+	public Double getStore_longitude() {
+		return store_longitude;
+	}
+
+	public void setStore_longitude(Double store_longitude) {
+		this.store_longitude = store_longitude;
+	}
+
 }

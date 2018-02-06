@@ -18,6 +18,23 @@ public class Food {
 	public Food() {
 		super();
 	}
+	
+	public Food(FoodWithLatLng foodWithLatLng) {
+		super();
+		this.food_id = foodWithLatLng.getFood_id();
+		this.food_name = foodWithLatLng.getFood_name();
+		this.food_price = foodWithLatLng.getFood_price();
+		this.food_intro = foodWithLatLng.getFood_intro();
+		this.food_pic_hdpi = null;
+		this.food_pic_ldpi = null;
+		this.food_pic_mdpi = null;
+		this.food_pic = null;
+		this.food_limit = foodWithLatLng.getFood_limit();
+		this.food_type = foodWithLatLng.getFood_type();
+		this.food_store = foodWithLatLng.getFood_store();
+		this.food_status = foodWithLatLng.getFood_status();
+		this.food_review_count = foodWithLatLng.getFood_review_count();
+	}
 
 	public Food(Integer food_id, String food_name, Integer food_price, String food_intro, String food_pic_hdpi,
 			String food_pic_ldpi, String food_pic_mdpi, String food_pic, Integer food_limit, String food_type,

@@ -23,23 +23,22 @@ import _00_utility.model.FoodWithLatLng;
 import _02_recommendation.model.FindFoodDao;
 
 /**
- * 這支Servlet負責接收依照餐點種類查詢餐點的請求
+ * 這支Servlet負責接收亂數查詢餐點的請求
  * 
- * 請求必須以JSON格式寫進來；回應也一律以JSON格式回傳
+ * 請求必須以JSON格式寫進來回應也一律以JSON格式回傳
  * 
  * 搜尋功能可以依定位經緯度縮小搜尋範圍
- * 若要使用定位功能，請附上經緯度參數：{"food_type":"xxxxx","latitude"="xx.xxxxx","longitude"="xxx.xxxxx"}
+ * 若要使用定位功能，請附上經緯度參數：{"latitude"="xx.xxxxx","longitude"="xxx.xxxxx"}
  */
-@WebServlet("/RequestFoodByType.do")
-public class RequestFoodByTypeServlet extends HttpServlet {
+@WebServlet("/RequestRandomFood.do")
+public class RequestRandomFoodServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final static String CONTENT_TYPE = "text/html; charset=utf-8";
 	Map<String, String> errorMessage = new HashMap<String, String>();
-	List<Food> foods = new ArrayList<Food>();
+	List<Food> foods = new ArrayList<>();
 	JsonUtil jsonUtil = new JsonUtil();
 	StringBuffer jsonInString, jsonOutString;
 	FoodWithLatLng foodWithLatLng = new FoodWithLatLng();
-	String food_type;
 	Double latitude, longitude;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,27 +51,28 @@ public class RequestFoodByTypeServlet extends HttpServlet {
 		WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		FindFoodDao dao = (FindFoodDao) ctx.getBean("findFoodJDBCDS");
 		request.setCharacterEncoding("UTF8");
-
+		
 		// 開始讀取clien端傳來json字串動作
 		BufferedReader br = request.getReader();
 		jsonInString = new StringBuffer();
 		String line = null;
+		// 讀取client端的json字串
 		while ((line = br.readLine()) != null) {
 			jsonInString.append(line);
 		}
 		br.close();
-
-		foodWithLatLng = jsonUtil.convertToFoodWithLatLngFrom(jsonInString.toString());
-		food_type = foodWithLatLng.getFood_type();
-		try {
+		
+		try { // 有定位經緯度，亂數取出五公里內三道餐點
+			// 將json字串轉為FoodWithLatLng物件
+			foodWithLatLng = jsonUtil.convertToFoodWithLatLngFrom(jsonInString.toString());
 			latitude = foodWithLatLng.getStore_latitude();
 			longitude = foodWithLatLng.getStore_longitude();
-			// 依定位縮小搜尋範圍
-			foods = dao.findWithinDistanceFoodBy(food_type, latitude, longitude);
+			// 依定位縮小搜尋範圍，再亂數選出三道餐點
+			foods = dao.findRandomFoodByLatLng(latitude, longitude);
 			sendJsonWithWriter(response);
-		} catch (NullPointerException e) {
+		} catch (NullPointerException e) { // 無定位經緯度，從全部餐點亂數取出三道
 			System.out.println(e.getMessage());
-			foods = dao.findFoodBy(food_type);
+			foods = dao.findRandomFood();
 			sendJsonWithWriter(response);
 		}
 	}
