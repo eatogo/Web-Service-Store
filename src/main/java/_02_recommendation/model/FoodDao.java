@@ -11,28 +11,32 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import _00_utility.LocationUtil;
-import _00_utility.RandomUtil;
-import _00_utility.model.Food;
-import _00_utility.model.FoodWithLatLng;
-import _00_utility.model.Place;
-import _00_utility.model.Store;
+import _00_global.model.Food;
+import _00_global.model.FoodWithLatLng;
+import _00_global.model.Place;
+import _00_global.model.Store;
 
-public class FindFoodDao {
-	DataSource dataSource;
-	LocationUtil locationUtil = new LocationUtil();
-	RandomUtil randomUtil = new RandomUtil();
-	Place firstSpot;
-	Place secondSpot;
-	private List<Food> foodPortfolio = new ArrayList<>();
-	private List<FoodWithLatLng> foodWithLatLngPortfolio = new ArrayList<>();
-	private List<Store> storePortfolio = new ArrayList<>();
+public class FoodDao {
+	private DataSource dataSource;
+	private LocationUtilImpl locationUtil;
+	private RandomUtilImpl randomUtil;
+	private Place firstSpot;
+	private Place secondSpot;
+	private List<Food> foodPortfolio;
+	private List<FoodWithLatLng> foodWithLatLngPortfolio;
+	private List<Store> storePortfolio;
 	private final int OBJECT_TYPE_FOOD = 1;
 	private final int OBJECT_TYPE_FOOD_WITH_LATLNG = 2;
 	private final int OBJECT_TYPE_STORE = 3;
 
-	public FindFoodDao(DataSource dataSource) {
+	public FoodDao(DataSource dataSource, LocationUtilImpl locationUtil, RandomUtilImpl randomUtil,
+			ArrayList<Food> foodPortfolio, ArrayList<FoodWithLatLng> foodWithLatLngPortfolio, ArrayList<Store> storePortfolio) {
 		this.dataSource = dataSource;
+		this.locationUtil = locationUtil;
+		this.randomUtil = randomUtil;
+		this.foodPortfolio = foodPortfolio;
+		this.foodWithLatLngPortfolio = foodWithLatLngPortfolio;
+		this.storePortfolio = storePortfolio;
 	}
 
 	private String findFoodByTypeSql = "SELECT * FROM `FOODS` WHERE food_type = ?;";
@@ -53,32 +57,32 @@ public class FindFoodDao {
 		}
 	}
 
-	private String findStoreByIdSql = "SELECT * FROM `STORES` WHERE store_id = ?;";
+	private final String findFoodFromViewByTypeSql = "SELECT * FROM `VIEW_FOOD_LATLNG` WHERE food_type = ?;";
 
 	/**
-	 * 依照餐點類型尋找餐點，並篩選5公里以內的店家 回傳值為key是餐點編號、value是該Food物件的ArrayList
+	 * 依照餐點類型尋找餐點，並篩選2.5公里以內的店家 回傳值為key是餐點編號、value是該Food物件的ArrayList
 	 */
 	public List<Food> findWithinDistanceFoodBy(String food_type, Double latitude, Double longitude) {
-		try (Connection conn = dataSource.getConnection();
-				PreparedStatement psFood = conn.prepareStatement(findFoodByTypeSql);
-				PreparedStatement psStore = conn.prepareStatement(findStoreByIdSql);) {
+		try {
+			Connection conn = dataSource.getConnection();
+			PreparedStatement psFood = conn.prepareStatement(findFoodFromViewByTypeSql);
 			firstSpot = new Place(latitude, longitude);
 			psFood.setString(1, food_type);
-			extractInfoFromQueryResult(psFood.executeQuery(), OBJECT_TYPE_FOOD);
-			Iterator<Food> foodIt = foodPortfolio.iterator();
+			extractInfoFromQueryResult(psFood.executeQuery(), OBJECT_TYPE_FOOD_WITH_LATLNG);
+			Iterator<FoodWithLatLng> foodIt = foodWithLatLngPortfolio.iterator();
 			while (foodIt.hasNext()) {
-				Food dish = foodIt.next();
-				psStore.setInt(1, dish.getFood_store());
-				ResultSet result = psStore.executeQuery();
-				result.next();
-				secondSpot = new Place(result.getDouble(9), result.getDouble(10));
+				FoodWithLatLng dish = foodIt.next();
+				secondSpot = new Place(dish.getStore_latitude(), dish.getStore_longitude());
 				double distance = locationUtil.distance(firstSpot, secondSpot);
-				System.out.println(distance);
-				if (distance > 5.0) {
+				if (Double.compare(distance, 2.5) > 0) {
 					foodIt.remove();
 				}
 			}
-			if (!foodPortfolio.isEmpty()) {
+			System.out.println("篩選後結果共找到" + foodWithLatLngPortfolio.size() + "道餐點");
+			psFood.close();
+			conn.close();
+			if (!foodWithLatLngPortfolio.isEmpty()) {
+				convertFoodWithLatLngToFood(foodWithLatLngPortfolio);
 				return foodPortfolio;
 			} else {
 				return null;
@@ -130,10 +134,12 @@ public class FindFoodDao {
 	}
 
 	/**
-	 * 亂數選出三項餐點，並篩選5公里以內的店家 回傳值為key是餐點編號、value是該Food物件的ArrayList
+	 * 亂數選出三項餐點，並篩選2.5公里以內的店家 回傳值為key是餐點編號、value是該Food物件的ArrayList
 	 */
 	public List<Food> findRandomFoodByLatLng(Double latitude, Double longitude) {
-		try (Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement();) {
+		try {
+			Connection conn = dataSource.getConnection();
+			Statement stmt = conn.createStatement();
 			firstSpot = new Place(latitude, longitude);
 			extractInfoFromQueryResult(stmt.executeQuery(findFoodFromViewSql), OBJECT_TYPE_FOOD_WITH_LATLNG);
 			Iterator<FoodWithLatLng> foodIt = foodWithLatLngPortfolio.iterator();
@@ -141,10 +147,13 @@ public class FindFoodDao {
 				FoodWithLatLng dish = foodIt.next();
 				secondSpot = new Place(dish.getStore_latitude(), dish.getStore_longitude());
 				double distance = locationUtil.distance(firstSpot, secondSpot);
-				if (distance > 5.0) {
+				if (Double.compare(distance, 2.5) > 0) {
 					foodIt.remove();
 				}
 			}
+			System.out.println("篩選後結果共找到" + foodWithLatLngPortfolio.size() + "道餐點");
+			stmt.close();
+			conn.close();
 			if (!foodWithLatLngPortfolio.isEmpty()) {
 				convertFoodWithLatLngToFood(foodWithLatLngPortfolio);
 				foodPortfolio = randomUtil.getThreeRandomPicksInList(foodPortfolio);

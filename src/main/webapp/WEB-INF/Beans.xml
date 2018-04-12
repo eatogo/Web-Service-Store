@@ -4,27 +4,65 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- Initialization for DriverManagerDataSource -->
-	<bean id="dataSource"
+	<!-- <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/eatogodb?useUnicode=true&amp;characterEncoding=utf8&amp;verifyServerCertificate=false&amp;useSSL=true" />
 		<property name="username" value="root" />
 		<property name="password" value="" />
+	</bean> -->
+	
+	<!-- Initialization for org.apache.commons.dbcp.BasicDataSource -->
+	<!-- <bean id="dataSourceBDS"
+	class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url"
+		value="jdbc:mysql://localhost:3306/eatogodb?userUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true"/>
+		<property name="username" value="root"/>
+		<property name="password" value=""/>
+		<property name="initialSize" value="5"/>
+		<property name="maxActive" value="10"/>
+	</bean> -->
+	
+	<!-- Initialization for SingleConnectionDataSource -->
+	<bean id="dataSourceC3P0" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method='close'>
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://localhost:3306/eatogodb?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="user" value="root" />
+		<property name="password" value="" />
 	</bean>
+	
+	<!-- Utility Implementations -->
+	<bean id="locationUtil" class="_02_recommendation.model.LocationUtilImpl"></bean>
+	<bean id="randomUtil" class="_02_recommendation.model.RandomUtilImpl" scope="prototype">
+		<property name="threePicksList" ref="foodPortfolio"/>
+	</bean>
+	
+	<!-- ArrayList Injection -->
+	<bean id="foodPortfolio" class="java.util.ArrayList" scope="prototype"></bean>
+	<bean id="foodWithLatLngPortfolio" class="java.util.ArrayList" scope="prototype"></bean>
+	<bean id="storePortfolio" class="java.util.ArrayList" scope="prototype"></bean>
 
 	<!-- DAOs -->
-	<bean id="userJDBCDS" class="_01_authentication.model.UserDao">
-		<constructor-arg ref="dataSource"/>
+	<bean id="userJDBCDS" class="_01_authentication.model.UserDao" scope="prototype">
+		<constructor-arg ref="dataSourceC3P0"/>
 	</bean>
 	<bean id="autenticateJDBCDS" class="_01_authentication.model.AuthenticateDao">
-		<constructor-arg ref="dataSource"/>
+		<constructor-arg ref="dataSourceC3P0"/>
 	</bean>
-	<bean id="findFoodJDBCDS" class="_02_recommendation.model.FindFoodDao">
-		<constructor-arg ref="dataSource" />
+	<bean id="findFoodJDBCDS" class="_02_recommendation.model.FoodDao" scope="prototype">
+		<constructor-arg ref="dataSourceC3P0"/>
+		<constructor-arg ref="locationUtil"/>
+		<constructor-arg ref="randomUtil"/>
+		<constructor-arg ref="foodPortfolio"/>
+		<constructor-arg ref="foodWithLatLngPortfolio"/>
+		<constructor-arg ref="storePortfolio"/>
 	</bean>
-	<bean id="storeJDBCDS" class="_07_storeInterface.model.StoreDao">
-		<constructor-arg ref="dataSource"/>
+	<bean id="storeJDBCDS" class="_07_storeInterface.model.StoreDao" scope="prototype">
+		<constructor-arg ref="dataSourceC3P0"/>
 	</bean>
 
 </beans>

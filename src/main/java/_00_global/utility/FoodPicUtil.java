@@ -1,4 +1,4 @@
-package _00_utility.model;
+package _00_global.utility;
 
 public class FoodPicUtil {
 

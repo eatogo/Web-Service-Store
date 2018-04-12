@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import _00_utility.JsonUtil;
-import _00_utility.model.Food;
-import _00_utility.model.FoodWithLatLng;
-import _02_recommendation.model.FindFoodDao;
+import _00_global.JsonUtilImpl;
+import _00_global.model.Food;
+import _00_global.model.FoodWithLatLng;
+import _02_recommendation.model.FoodDao;
 
 /**
  * 這支Servlet負責接收依照餐點種類查詢餐點的請求
@@ -28,17 +28,17 @@ import _02_recommendation.model.FindFoodDao;
  * 請求必須以JSON格式寫進來；回應也一律以JSON格式回傳
  * 
  * 搜尋功能可以依定位經緯度縮小搜尋範圍
- * 若要使用定位功能，請附上經緯度參數：{"food_type":"xxxxx","latitude"="xx.xxxxx","longitude"="xxx.xxxxx"}
+ * 若要使用定位功能，請附上經緯度參數：{"food_type":"xxxxx","store_latitude"="xx.xxxxx","store_longitude"="xxx.xxxxx"}
  */
 @WebServlet("/RequestFoodByType.do")
 public class RequestFoodByTypeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final static String CONTENT_TYPE = "text/html; charset=utf-8";
-	Map<String, String> errorMessage = new HashMap<String, String>();
+	Map<String, String> errorMessage = new HashMap<String, String>();;
 	List<Food> foods = new ArrayList<Food>();
-	JsonUtil jsonUtil = new JsonUtil();
+	JsonUtilImpl jsonUtil = new JsonUtilImpl();
 	StringBuffer jsonInString, jsonOutString;
-	FoodWithLatLng foodWithLatLng = new FoodWithLatLng();
+	FoodWithLatLng foodWithLatLng;
 	String food_type;
 	Double latitude, longitude;
 
@@ -50,7 +50,7 @@ public class RequestFoodByTypeServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-		FindFoodDao dao = (FindFoodDao) ctx.getBean("findFoodJDBCDS");
+		FoodDao dao = (FoodDao) ctx.getBean("findFoodJDBCDS");
 		request.setCharacterEncoding("UTF8");
 
 		// 開始讀取clien端傳來json字串動作
@@ -81,7 +81,7 @@ public class RequestFoodByTypeServlet extends HttpServlet {
 		response.setContentType(CONTENT_TYPE);
 		if (!foods.isEmpty()) {
 			jsonOutString = new StringBuffer();
-			jsonOutString.append(jsonUtil.listTojson(foods));
+			jsonOutString.append(jsonUtil.convertToJsonFrom(foods));
 			PrintWriter out = response.getWriter();
 			out.println(jsonOutString);
 			out.close();

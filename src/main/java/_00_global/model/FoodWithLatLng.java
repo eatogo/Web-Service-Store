@@ -1,4 +1,4 @@
-package _00_utility.model;
+package _00_global.model;
 
 public class FoodWithLatLng {
 	private Integer food_id;
@@ -120,6 +120,15 @@ public class FoodWithLatLng {
 
 	public void setStore_longitude(Double store_longitude) {
 		this.store_longitude = store_longitude;
+	}
+
+	@Override
+	public String toString() {
+		return "FoodWithLatLng [food_id=" + food_id + ", food_name=" + food_name + ", food_price=" + food_price
+				+ ", food_intro=" + food_intro + ", food_limit=" + food_limit + ", food_type=" + food_type
+				+ ", food_store=" + food_store + ", food_status=" + food_status + ", food_review_count="
+				+ food_review_count + ", store_latitude=" + store_latitude + ", store_longitude=" + store_longitude
+				+ "]";
 	}
 
 }

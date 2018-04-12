@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import _00_utility.JsonUtil;
-import _00_utility.ValidateUtil;
-import _00_utility.model.User;
+import _00_global.JsonUtilImpl;
+import _00_global.ValidateUtil;
+import _00_global.model.User;
 import _01_authentication.model.UserDao;
 
 @WebServlet("/SignUpJson.do")
@@ -32,7 +32,7 @@ public class SignUpJsonServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		UserDao userDao = (UserDao) ctx.getBean("userJDBCDS");
-		JsonUtil jsonUtil = (JsonUtil) ctx.getBean("jsonUtil");
+		JsonUtilImpl jsonUtil = (JsonUtilImpl) ctx.getBean("jsonUtil");
 		ValidateUtil validateUtil = (ValidateUtil) ctx.getBean("validateUtil");
 		
 		request.setCharacterEncoding("UTF8");

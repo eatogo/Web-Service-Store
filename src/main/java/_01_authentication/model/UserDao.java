@@ -8,7 +8,7 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
-import _00_utility.model.User;
+import _00_global.model.User;
 
 public class UserDao {
 	DataSource dataSource;

@@ -1,12 +1,20 @@
-package _00_utility;
+package _02_recommendation.model;
 
-import _00_utility.model.Place;
+import _00_global.model.Place;
+import _00_global.utility.LocationUtil;
 
-public class LocationUtil {
+/**
+ * 此類別利用兩地經緯度計算距離
+ */
+public class LocationUtilImpl implements LocationUtil {
+	
+	public LocationUtilImpl() {
+	}
 
-	/*
-	 * 回傳的distance單位為km latitude
+	/**
+	 * 回傳的double值單位為km
 	 */
+	@Override
 	public double distance(Place firstSpot, Place secondSpot) {
 		double firstLatitude = firstSpot.getLatitude();
 		double firstLongitude = firstSpot.getLongitude();
@@ -19,9 +27,10 @@ public class LocationUtil {
 						* Math.cos(deciamlDegreeToRadians(theta));
 		distance = Math.acos(distance);
 		distance = radiansToDecimalDegree(distance);
+		// 此處計算出來的distance單位為mile
 		distance = distance * 60 * 1.1515;
 		// 將單位從mile轉為km
-		// 若改成以0.8684則是轉為海哩nautica mile
+		// 若改為乘以0.8684則是轉為海哩nautica mile
 		distance = distance * 1.609344;
 		return (distance);
 	}

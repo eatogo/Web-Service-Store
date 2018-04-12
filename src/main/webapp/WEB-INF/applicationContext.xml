@@ -6,9 +6,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
-	<bean id="jsonUtil" class="_00_utility.JsonUtil"></bean>
-	<bean id="validateUtil" class="_00_utility.ValidateUtil"></bean>
-	<bean id="locationUtil" class="_00_utility.LocationUtil"></bean>
-	<bean id="randomUtil" class="_00_utility.RandomUtil"></bean>
+	<!-- Beans that are not a reference -->
+	<bean id="foods" class="java.util.ArrayList" scope="prototype"></bean>
+	<bean id="jsonUtil" class="_00_global.JsonUtilImpl" scope="prototype"></bean>
+	<bean id="foodWithLatLng" class="_00_global.model.FoodWithLatLng" scope="prototype"></bean>
 
 </beans>

@@ -1,4 +1,4 @@
-package _00_utility.model;
+package _00_global.model;
 
 public class Place {
 	private String requestIdentity = null;

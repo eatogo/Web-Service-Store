@@ -1,6 +1,6 @@
-package _00_utility;
+package _00_global;
 
-import _00_utility.model.User;
+import _00_global.model.User;
 
 public class ValidateUtil {
 

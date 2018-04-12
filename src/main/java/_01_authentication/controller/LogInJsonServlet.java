@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import _00_utility.JsonUtil;
-import _00_utility.ValidateUtil;
-import _00_utility.model.User;
+import _00_global.JsonUtilImpl;
+import _00_global.ValidateUtil;
+import _00_global.model.User;
 import _01_authentication.model.UserDao;
 
 @WebServlet("/LogInJson.do")
@@ -34,7 +34,7 @@ public class LogInJsonServlet extends HttpServlet {
 			throws ServletException, IOException {
 		WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		UserDao userDao = (UserDao) ctx.getBean("userJDBCDS");
-		JsonUtil jsonUtil = (JsonUtil) ctx.getBean("jsonUtil");
+		JsonUtilImpl jsonUtil = (JsonUtilImpl) ctx.getBean("jsonUtil");
 		ValidateUtil validateUtil = (ValidateUtil) ctx.getBean("validateUtil");
 		
 		request.setCharacterEncoding("UTF8");
@@ -53,7 +53,7 @@ public class LogInJsonServlet extends HttpServlet {
 			user = userDao.findUserByStringData("user_cellphone", userUnverified.getUser_cellphone());
 			if (user.getUser_id() != null) { // 找到註冊過的資料，才能登入
 				jsonOutString = new StringBuffer();
-				jsonOutString.append(jsonUtil.userToJson(user));
+				jsonOutString.append(jsonUtil.convertToJsonFrom(user));
 				send(jsonOutString.toString(), response);
 			} else { // 找不到註冊過的資料
 				send("Not registered", response);
